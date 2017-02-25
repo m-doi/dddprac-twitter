@@ -1,0 +1,15 @@
+@startuml
+
+usecase "tweet" as UC
+actor "User" as US
+
+boundary TweetForm
+control TweetControl
+
+entity Tweet
+
+US --> TweetForm
+TweetForm --> TweetControl
+TweetControl --> Tweet : create
+
+@enduml

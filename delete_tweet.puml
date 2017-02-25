@@ -1,0 +1,17 @@
+@startuml
+
+usecase "delete tweet" as UC
+actor "User" as US
+
+boundary DeleteTweetForm
+control TweetControl
+
+entity Tweet
+
+US --> DeleteTweetForm
+DeleteTweetForm --> TweetControl
+TweetControl --> Tweet : delete
+Tweet --> Tweet : "delete retweet"
+
+
+@enduml

@@ -1,0 +1,19 @@
+@startuml
+
+usecase "show timeline" as UC
+actor "User" as US
+
+control TimeLineControl
+entity LoginUser
+entity Timeline
+boundary TimeLineDisplay
+
+
+US --> TimeLineControl
+TimeLineControl --> LoginUser : "get following user list"
+TimeLineControl --> Timeline : "create timeline"
+Timeline --> TimeLineDisplay
+TimeLineDisplay --> US
+
+
+@enduml

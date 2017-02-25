@@ -1,0 +1,15 @@
+@startuml
+
+usecase "follow user" as UC
+actor "User" as US
+
+boundary FollowForm
+control UserControl
+
+entity User
+
+US --> FollowForm
+FollowForm --> UserControl
+UserControl --> User : "add following user"
+
+@enduml

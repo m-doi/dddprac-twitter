@@ -1,7 +1,7 @@
 @startuml
 
 package tweet {
-    class Tweet
+    class Tweet  <<Root>>
     class Retweet
     class Reply
 }
@@ -11,7 +11,7 @@ Tweet <|-- Reply
 Retweet "0..1" o-- "1" Tweet
 Tweet "1" *-- "0..*" Retweet
 
-package usr {
+package user {
     class User <<Root>>
     class LoginUser {
         --
@@ -28,7 +28,7 @@ User "1" *-- "0..*" Tweet : post
 Reply "1" o-- "1" User : To
 
 package timeline {
-    class TimeLine {
+    class TimeLine <<Root>> {
         --
         + {static} create(loginUser : LoginUser, followings : List<FollowingUser>) : TimeLine
     }

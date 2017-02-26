@@ -1,6 +1,6 @@
 @startuml
 
-package tweet {
+package tweet <<core-domain>> {
     class Tweet  <<Root>>
     class Retweet
     class Reply

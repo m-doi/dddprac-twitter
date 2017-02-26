@@ -6,23 +6,31 @@ package tweet <<core-domain>> {
         - content : String
         --
         + {static} tweet(content : String) : Tweet
-        + delete() : void
-        + {static} reTweet(content : String, src : Tweet) : Tuple<Retweet, Tweet>
-        + {static} replay(content : String, to : To, src : Option<Tweet>) : Tuple<Reply, Tweet>
-        - addRelatedTweet(tweet : RelatedTweet) : Tweet
     }
-    interface RelatedTweet
-    class Retweet
-    class Reply
+    class DeletableTweet {
+        # addRelatedTweet(tweet : RelatedTweet) : DeletableTweet
+        + delete() : void
+    }
+    interface RelatedTweet {
+        --
+        + delete() : void
+    }
+    class Retweet {
+        + {static} reTweet(content : String, src : DeletableTweet) : Tuple<Retweet, DeletableTweet>
+    }
+    class Reply {
+        + {static} replay(content : String, to : To, src : Option<DeletableTweet>) : Tuple<Reply, DeletableTweet>
+    }
     interface To
 
+    Tweet <|-- DeletableTweet
     RelatedTweet <|.. Reply
     RelatedTweet <|.. Retweet
-    Tweet <|-- Reply
-    Tweet <|-- Retweet
+    DeletableTweet <|-- Reply
+    DeletableTweet <|-- Retweet
     Retweet "0..1" o-- "1" Tweet
     Reply "0..1" o-- "1" Tweet
-    Tweet "1" *-- "0..*" RelatedTweet
+    DeletableTweet "1" *-- "0..*" RelatedTweet
 
     Reply "1" o-- "1" To
 }

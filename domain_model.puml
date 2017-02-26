@@ -1,15 +1,28 @@
 @startuml
 
 package tweet <<core-domain>> {
-    class Tweet  <<Root>>
+    class Tweet  <<Root>> {
+        - id : int
+        - content : String
+        --
+        + {static} tweet(content : String) : Tweet
+        + delete() : void
+        + {static} reTweet(content : String, src : Tweet) : Tuple<Retweet, Tweet>
+        + {static} replay(content : String, to : To, src : Option<Tweet>) : Tuple<Reply, Tweet>
+        - addRelatedTweet(tweet : RelatedTweet) : Tweet
+    }
+    interface RelatedTweet
     class Retweet
     class Reply
     interface To
 
-    Tweet <|-- Retweet
+    RelatedTweet <|.. Reply
+    RelatedTweet <|.. Retweet
     Tweet <|-- Reply
+    Tweet <|-- Retweet
     Retweet "0..1" o-- "1" Tweet
-    Tweet "1" *-- "0..*" Retweet
+    Reply "0..1" o-- "1" Tweet
+    Tweet "1" *-- "0..*" RelatedTweet
 
     Reply "1" o-- "1" To
 }

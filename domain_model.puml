@@ -40,6 +40,9 @@ package timeline {
 }
 
 TimeLine "1" o-- "0..*" Tweet
+TimeLine --> LoginUser
+TimeLine --> FollowingUser
+
 
 
 

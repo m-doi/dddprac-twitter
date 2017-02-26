@@ -26,8 +26,8 @@ package tweet <<core-domain>> {
     Tweet <|-- DeletableTweet
     RelatedTweet <|.. Reply
     RelatedTweet <|.. Retweet
-    DeletableTweet <|-- Reply
-    DeletableTweet <|-- Retweet
+    Tweet <|-- Reply
+    Tweet <|-- Retweet
     Retweet "0..1" o-- "1" Tweet
     Reply "0..1" o-- "1" Tweet
     DeletableTweet "1" *-- "0..*" RelatedTweet

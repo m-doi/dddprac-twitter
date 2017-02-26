@@ -4,12 +4,17 @@ package tweet <<core-domain>> {
     class Tweet  <<Root>>
     class Retweet
     class Reply
+    interface To
+
+    Tweet <|-- Retweet
+    Tweet <|-- Reply
+    Retweet "0..1" o-- "1" Tweet
+    Tweet "1" *-- "0..*" Retweet
+
+    Reply "1" o-- "1" To
 }
 
-Tweet <|-- Retweet
-Tweet <|-- Reply
-Retweet "0..1" o-- "1" Tweet
-Tweet "1" *-- "0..*" Retweet
+
 
 package user {
     class User <<Root>>
@@ -25,7 +30,7 @@ package user {
 }
 
 User "1" *-- "0..*" Tweet : post
-Reply "1" o-- "1" User : To
+To <|.. User
 
 package timeline {
     class TimeLine <<Root>> {

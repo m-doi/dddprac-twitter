@@ -12,20 +12,29 @@ Retweet "0..1" o-- "1" Tweet
 Tweet "1" *-- "0..*" Retweet
 
 package usr {
-    class User
-    class Follower
+    class User <<Root>>
+    class LoginUser {
+        --
+        getFollowingUsers() : List<FollowingUser>
+    }
+
+    User <|-- LoginUser
+
+    class FollowingUser
+    User "1" *-- "0..*" FollowingUser
 }
 
 User "1" *-- "0..*" Tweet : post
 Reply "1" o-- "1" User : To
-User "1" *-- "1..*" Follower
-User "1" o-- "0..*" User : following
 
 package timeline {
-    class Timeline
+    class TimeLine {
+        --
+        + {static} create(loginUser : LoginUser, followings : List<FollowingUser>) : TimeLine
+    }
 }
 
-Timeline "1" o-- "0..*" Tweet
+TimeLine "1" o-- "0..*" Tweet
 
 
 

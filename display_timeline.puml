@@ -4,14 +4,40 @@ usecase "show timeline" as UC
 actor "User" as US
 
 control TimeLineControl
-entity LoginUser
+control TimeLineCreate
+entity LoginUser as u1
+entity AnotherUser as u2
 entity Timeline
+entity FollowingUser as f1
+entity Tweet as t1
+entity Reply as rep1
+entity Retweet as ret1
+entity Tweet as t2
+entity Tweet as t3
+entity Reply as rep3
+entity Retweet as ret3
+
 boundary TimeLineDisplay
+
+u1 *-- t1
+u1 *-- rep1
+u1 *-- ret1
+u2 *-- t2
+ret1 o-- t2
+f1 *-- t3
+f1 *-- rep3
+f1 *-- ret3
+u1 *-- f1
 
 
 US --> TimeLineControl
-TimeLineControl --> LoginUser : "get following user list"
-TimeLineControl --> Timeline : "create timeline"
+TimeLineControl --> u1 : find
+TimeLineControl --> TimeLineCreate
+TimeLineCreate --> u1 : getTweetList
+TimeLineCreate --> Timeline : create
+
+
+
 Timeline --> TimeLineDisplay
 TimeLineDisplay --> US
 

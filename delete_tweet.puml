@@ -6,11 +6,14 @@ actor "User" as US
 boundary DeleteTweetForm
 control TweetControl
 
-entity Tweet
+entity DeletableTweet
+entity Retweet
+
+DeletableTweet "1" *-- "0..*" Retweet
 
 US --> DeleteTweetForm
 DeleteTweetForm --> TweetControl
-TweetControl --> Tweet : delete
+TweetControl --> DeletableTweet : delete
 Tweet --> Tweet : "delete retweet"
 
 

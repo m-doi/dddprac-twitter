@@ -1,70 +1,80 @@
 @startuml
 
 package tweet <<core-domain>> {
-    class Tweet  <<Root>> {
-        - id : int
-        - content : String
+    class "Tweet <<Root>>"  as TW {
+        - id : Id
+        - content : Content
         --
-        + {static} tweet(content : String) : Tweet
+        + {static} tweet(content : Content) : Tweet
     }
-    class DeletableTweet {
-        # addRelatedTweet(tweet : RelatedTweet) : DeletableTweet
-        + delete() : void
+
+    class "Retweet" as RT {
+        + {static} reTweet(content : Content, src : Tweet) : Retweet
     }
-    interface RelatedTweet {
+
+    class "Reply" as RP {
+        + {static} replay(content : Content, to : To, src : Option<Tweet>) : Reply
+    }
+
+    interface "To" as TO
+    interface "Owner" as OWN
+
+    TW <|-- RP
+    TW <|-- RT
+    TW "1" *-- "1" OWN
+    RT "0..1" o-- "1" TW
+    RP "0..1" o-- "1" TW
+    RP "1" o-- "1" TO
+
+    package deletable {
+        class "Tweet" as DTW {
+            id : int
+            --
+            delete() : List<DeletedId>
+        }
+        class "Reply" as DRP
+        class "Retweet" as DRT
+
+        DTW <|-- DRP
+        DTW <|-- DRT
+        DTW "1" *-- "0..*" DTW
+    }
+
+    interface "TweetRepository" as TREP {
         --
-        + delete() : void
+        find(owner : Owner) : Tweet
+        findDeletable(id : Id) :deletable.Tweet
+        add(tweet : Tweet) : void
+        deleteAll(ids : List<DeletedId>) : void
     }
-    class Retweet {
-        + {static} reTweet(content : String, src : DeletableTweet) : Tuple<Retweet, DeletableTweet>
-    }
-    class Reply {
-        + {static} replay(content : String, to : To, src : Option<DeletableTweet>) : Tuple<Reply, DeletableTweet>
-    }
-    interface To
-
-    Tweet <|-- DeletableTweet
-    RelatedTweet <|.. Reply
-    RelatedTweet <|.. Retweet
-    Tweet <|-- Reply
-    Tweet <|-- Retweet
-    Retweet "0..1" o-- "1" Tweet
-    Reply "0..1" o-- "1" Tweet
-    DeletableTweet "1" *-- "0..*" RelatedTweet
-
-    Reply "1" o-- "1" To
 }
-
-
 
 package user {
-    class User <<Root>>
-    class LoginUser {
+    class "User <<Root>>" as U
+    class "LoginUser" as LU {
         --
         getFollowingUsers() : List<FollowingUser>
+        addFollowingUser(user : FollowingUser) : LoginUser
     }
-
-    User <|-- LoginUser
-
-    class FollowingUser
-    User "1" *-- "0..*" FollowingUser
+    class "FollowingUser" as FU
+    U <|-- LU
+    U <|-- FU
+    LU "1" *-- "0..*" FU
 }
 
-User "1" *-- "0..*" Tweet : post
-To <|.. User
+U "1" *-- "0..*" TW : post
+TO <|.. U
+OWN <|.. U
 
 package timeline {
-    class TimeLine <<Root>> {
+    class "TimeLine <<Root>>" as TL {
         --
-        + {static} create(loginUser : LoginUser, followings : List<FollowingUser>) : TimeLine
+        + {static} create(loginUser : LoginUser) : TimeLine
     }
 }
 
-TimeLine "1" o-- "0..*" Tweet
-TimeLine --> LoginUser
-TimeLine --> FollowingUser
-
-
-
+TL "1" o-- "0..*" TW
+TL --> LU
+TL --> FU
 
 @enduml

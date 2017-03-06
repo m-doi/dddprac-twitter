@@ -1,3 +1,4 @@
+
 @startuml
 
 package tweet <<core-domain>> {
@@ -42,7 +43,7 @@ package tweet <<core-domain>> {
 
     interface "TweetRepository" as TREP {
         --
-        find(owner : Owner) : Tweet
+        find(owner : Owner) : List<Tweet>
         findDeletable(id : Id) :deletable.Tweet
         add(tweet : Tweet) : void
         deleteAll(ids : List<DeletedId>) : void
@@ -50,21 +51,25 @@ package tweet <<core-domain>> {
 }
 
 package user {
-    class "User <<Root>>" as U
+    class "User <<Root>>" as U {
+        id : Id
+    }
     class "LoginUser" as LU {
         --
         getFollowingUsers() : List<FollowingUser>
         addFollowingUser(user : FollowingUser) : LoginUser
     }
     class "FollowingUser" as FU
+    class "Id" as UID
     U <|-- LU
     U <|-- FU
+    U "1" *-- "1" UID
     LU "1" *-- "0..*" FU
 }
 
 U "1" *-- "0..*" TW : post
-TO <|.. U
-OWN <|.. U
+TO <|.. UID
+OWN <|.. UID
 
 package timeline {
     class "TimeLine <<Root>>" as TL {
